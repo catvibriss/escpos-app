@@ -1,0 +1,75 @@
+{
+
+"name": "Wincord Nixdorf ND77",
+"manufacturer": "Nixdorf",
+
+"basics": [
+    "lf", "ff", "cr", "rs", "dle", "esc", "gs"
+],
+
+"esc_commands": [
+    "init",
+    "line_spacing", "line_spacing_default", "char_spacing", "underline", "bold", "double_strike", "align", "upside_down",
+    "print_mode", "undirectional_printing",
+    "absolute_position", "home_position", "relative_position",
+    "user_charset", "define_chars", "clean_user_chars",
+    "print_bit_image",
+    "peripheral_select", "peripheral_status", "panel_buttons", "peripheral_pulse",
+    "paper_feed", "reverse_paper_feed", "paper_sensor_stop", "paper_status",
+    "feed_lines", "reverse_feed_lines"
+],
+
+"esc_overwrites": {
+    "partial_cut": "m",
+    "cut": "i" 
+},
+
+"esc_customs": [
+    {
+        "command": "C",
+        "name": "document_eject_length",
+        "description": "selects the document eject length"
+    },
+    {
+        "command": "c0",
+        "name": "paper_selection",
+        "description": "selects print papers"
+    },
+    {
+        "command": "c1",
+        "name": "line_spacing_paper_selection",
+        "description": "selects papers for setting line spacing"
+    },
+    {
+        "command": "f",
+        "name": "document_waiting_time",
+        "description": "sets the document paper waiting time"
+    },
+    {
+        "command": "o",
+        "name": "software_stamp",
+        "description": "prints the software stamp stored in the printer"
+    },
+    {
+        "command": "z",
+        "name": "parallel_printing",
+        "description": "turns parallel printing for receipt and journal on or off"
+    }
+],
+
+"fonts": {
+    "7x9": {
+        "command": 1,
+        "columns": 40,
+        "double_width": true,
+        "double_heught": true
+    },
+    "9x9": {
+        "command": 0,
+        "columns": 30,
+        "double_width": true,
+        "double_heught": true
+    }
+}
+
+}

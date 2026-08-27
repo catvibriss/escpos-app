@@ -1,0 +1,2 @@
+class CommandNotAvaliable(Exception):
+    pass

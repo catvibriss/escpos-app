@@ -4,6 +4,11 @@ from dataclasses import dataclass, field
 
 import serial
 
+from functools import wraps
+from .exceptions import CommandNotAvaliable
+
+import json
+
 @dataclass
 class RequestData:
     size: int
@@ -11,8 +16,13 @@ class RequestData:
     req_event: threading.Event = field(default_factory=threading.Event)
     cancelled: bool = False
 
+def load_profile(profile_path: str):
+    with open(profile_path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+    return data
+
 class SerialPrinter:
-    def __init__(self, port: str, profile: str, serial_handler: callable = None):
+    def __init__(self, port: str, profile: dict, serial_handler: callable = None):
         self.port = port
         self.profile =  profile
 
@@ -142,3 +152,29 @@ class SerialPrinter:
             self._serial_handler(data_type, data)
         except Exception as e:
             print(repr(e))
+
+def check_profile(command_name, command_type):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(printer: SerialPrinter, *args, **kwargs):
+
+            override = None
+            profile = printer.profile
+
+            if command_type == "esc":
+                if command_name in profile["esc_commands"]:
+                    override = None
+
+                elif command_name in profile["esc_overwrites"]:
+                    override = profile["esc_overwrites"][command_name]
+
+                else:
+                    command = next((cmd for cmd in profile["esc_customs"] if cmd["name"] == command_name), None)
+                    if command is None:
+                        raise CommandNotAvaliable(f"ESC command \"{command_name}\" not avaliable for {profile["name"]}")
+                    
+                    override = command["command"]
+                
+            return func(printer, override, *args, **kwargs)
+        return wrapper
+    return decorator
