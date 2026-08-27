@@ -1,6 +1,8 @@
 # escpos-printer-app
 
-python app for ESC/POS printers
+python (3.14+) app for ESC/POS printers
+
+> curently only **SERIAL** printers supported sowwy
 
 ## features
 
@@ -15,3 +17,5 @@ if your printer supports **journal** paper, this app can use it for auto-logs or
 ### cli (in progress)
 use this shi in your project by simply sending cli commands
 
+### web (in progress)
+you can simply run this app on your PC and access the webapp on your local network to use your printer

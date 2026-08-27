@@ -58,6 +58,8 @@
 ],
 
 "fonts": {
+    "font_setup_in": ["print_mode"],
+
     "7x9": {
         "command": 1,
         "columns": 40,
@@ -69,6 +71,35 @@
         "columns": 30,
         "double_width": true,
         "double_heught": true
+    }
+},
+
+"asb": {
+    "avaliable": true,
+
+    "b1": {
+        "2": "drawer_pin",
+        "3": "offline",
+        "5": "cover_opened",
+        "6": "paper_feeding" 
+    },
+
+    "b2": {
+        "0": "customer_display",
+        "3": "cutter_error",
+        "5": "fatal_error",
+        "6": "error"
+    },
+
+    "b3": {
+        "0": "jpaper_near_end",
+        "1": "rpaper_near_end",
+        "2": "jpaper_end",
+        "3": "rpaper_end"
+    },
+
+    "b4": {
+        "0": "sleep_mode"
     }
 }
 
