@@ -15,8 +15,8 @@
     "user_charset", "define_chars", "clean_user_chars",
     "print_bit_image",
     "peripheral_select", "peripheral_status", "panel_buttons", "peripheral_pulse",
-    "paper_feed", "reverse_paper_feed", "paper_sensor_stop", "paper_status",
-    "feed_lines", "reverse_feed_lines"
+    "paper_feed", "paper_sensor_stop", "paper_status",
+    "feed_lines"
 ],
 
 "esc_overwrites": {

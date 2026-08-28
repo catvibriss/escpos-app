@@ -11,3 +11,5 @@ ENQ = b"\x05"
 RS  = b"\x1e"
 ESC = b"\x1b"
 GS  = b"\x1d"
+
+SP  = b"\x20"

@@ -5,7 +5,8 @@ from dataclasses import dataclass, field
 import serial
 
 from functools import wraps
-from .exceptions import CommandNotAvaliable
+from .exceptions import CommandNotAvaliable, BasicNotAvaliable
+from .const import ESC, GS
 
 import json
 
@@ -51,12 +52,19 @@ class SerialPrinter:
         self._rx_thread = threading.Thread(target=self._rx_monitor, daemon=True)
         self._rx_thread.start()
 
-    def send(self, data):
+    def send(self, data: bytes):
         if self._serial is None:
             raise RuntimeError("connect device first!")
+
+        if len(data) == 3 and data[:2] == GS + b"a":
+            self._asb_enabled = True
         
         self._serial.write(data)
         self._on_tx(data)
+
+    # esc/pos sends
+    def send_esc(self, cmd: bytes):
+        self.send(ESC + cmd)
 
     def request(self, data, timeout: float = 3):
         req = RequestData(size=2)
@@ -149,11 +157,36 @@ class SerialPrinter:
         if self._serial_handler is None: return
 
         try:
-            self._serial_handler(data_type, data)
+            self._serial_handler(data, data_type)
         except Exception as e:
             print(repr(e))
 
-def check_profile(command_name, command_type):
+def resolve_esc_command(command_name, command_standart: bytes | None = None):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(printer: SerialPrinter, *args, **kwargs):
+
+            cmd = command_standart
+            profile = printer.profile
+
+            if command_name in profile["esc_commands"]:
+                cmd = command_standart
+
+            elif command_name in profile["esc_overwrites"]:
+                cmd = profile["esc_overwrites"][command_name].encode("ascii")
+
+            else:
+                command = next((cmd for cmd in profile["esc_customs"] if cmd["name"] == command_name), None)
+                if command is None:
+                    raise CommandNotAvaliable(f"ESC command \"{command_name}\" not avaliable for \"{profile["name"]}\"")
+                
+                cmd = command["command"].encode("ascii")
+                
+            return func(printer, *args, _cmd=cmd, **kwargs)
+        return wrapper
+    return decorator
+
+def check_basics(basics):
     def decorator(func):
         @wraps(func)
         def wrapper(printer: SerialPrinter, *args, **kwargs):
@@ -161,19 +194,9 @@ def check_profile(command_name, command_type):
             override = None
             profile = printer.profile
 
-            if command_type == "esc":
-                if command_name in profile["esc_commands"]:
-                    override = None
-
-                elif command_name in profile["esc_overwrites"]:
-                    override = profile["esc_overwrites"][command_name]
-
-                else:
-                    command = next((cmd for cmd in profile["esc_customs"] if cmd["name"] == command_name), None)
-                    if command is None:
-                        raise CommandNotAvaliable(f"ESC command \"{command_name}\" not avaliable for {profile["name"]}")
-                    
-                    override = command["command"]
+            for basic in basics:
+                if basic not in profile["basics"]:
+                    raise BasicNotAvaliable(f"basic \"{basic}\" not avaliable for \"{profile["name"]}\"")
                 
             return func(printer, override, *args, **kwargs)
         return wrapper
