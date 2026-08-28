@@ -3,6 +3,16 @@ from typing import Any
 from .printer import SerialPrinter, resolve_esc_command
 from .exceptions import UnavaliableFeature, InvalidProfile
 from .utils import parse_command
+from .const import GS
+
+def set_asb(printer: SerialPrinter, key: int | bytes):
+    if not printer.profile.is_asb_avaliable():
+        raise UnavaliableFeature("asb", printer.profile.name)
+
+    key = bytes([key]) if isinstance(key, int) else key
+
+    cmd = GS + b"a" + key
+    printer.send(cmd)
 
 def send_custom_setting(printer: SerialPrinter, setting: str, value: Any):
     settings = printer.profile.get_custom_settings()

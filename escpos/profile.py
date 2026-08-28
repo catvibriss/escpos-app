@@ -18,6 +18,7 @@ class Profile:
         
         self._load()
 
+    # init
     def _load(self):
         self.profile_json = load_json(self.profile_path)
 
@@ -40,6 +41,7 @@ class Profile:
             if req not in self.profile_json:
                 raise MissedProfileField(req, self.name)
 
+    # cmds
     def get_command_group(self, group: str):
         group = group.lower()
 
@@ -52,9 +54,17 @@ class Profile:
 
         return commands, overwrites, customs
 
+    # papers
     def get_papers(self):
         return self.profile_json.get("papers")
-        
+
+    # settings
     def get_custom_settings(self):
         return self.profile_json.get("custom_settings", [])
-    
+
+    # asb
+    def is_asb_avaliable(self):
+        return self.profile_json["asb"]["avaliable"]
+
+    def get_asb(self):
+        return self.profile_json["asb"]

@@ -1,10 +1,11 @@
 from .const import *
+from .profile import Profile
 
-def parse_command(command: str):
+def parse_command(command: str) -> bytes:
     """
     parses a command string and cleans it for app
 
-    :param prof_cmd: command from profile to parse
+    :param command: command from profile to parse
     """
 
     if not command.isascii():
@@ -23,3 +24,30 @@ def parse_command(command: str):
         res += other.encode("ascii")
 
     return res
+
+def decode_asb(asb_profile: dict, data: bytes) -> dict:
+    """
+    decodes ASB from printer profile
+
+    :param profile: ASB from printer profile
+    :param data: bytes from ASB
+    """
+
+    if not isinstance(data, bytes):
+        raise TypeError(f"ASB expected bytes, not {type(data)}")
+    
+    if len(data) != 4:
+        raise ValueError("incorrect ASB lenght")
+
+    response = {}
+
+    for byte in range(4):
+        bkey = f"b{byte+1}"
+        if bkey not in asb_profile:
+            continue
+
+        for bit, name in asb_profile[bkey].items():
+            response[name] = bool((data[byte] >> int(bit)) & 1)
+
+    return response
+        
