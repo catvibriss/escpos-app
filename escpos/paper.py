@@ -1,4 +1,6 @@
 from .printer import SerialPrinter, resolve_esc_command
+from .utils import parse_command
+from .exceptions import InvalidProfile
 
 # paper feeding
 @resolve_esc_command("paper_feed", b"J")
@@ -29,3 +31,19 @@ def partial_cut(printer: SerialPrinter, _cmd: bytes):
 @resolve_esc_command("dotted_partial_cut", b"m")
 def dotted_partial_cut(printer: SerialPrinter, _cmd: bytes):
     printer.send_esc(_cmd)
+
+# paper select
+def select_paper(printer: SerialPrinter, choose: str):
+    papers = printer.profile.get_papers()
+    if len(papers["papers"]) == 0:
+        raise InvalidProfile(f"invalid papers in profile \"{printer.profile.name}\"")
+
+    cmd = parse_command(papers["setup_command"])
+
+    selected = next((pr for pr in papers["papers"] if pr["id"] == choose), None)
+    if selected is None:
+        raise ValueError(f"paper \"{choose}\" not found in profile \"{printer.profile.name}\"")
+
+    cmd += parse_command(selected["command"])
+
+    printer.send(cmd)

@@ -26,29 +26,36 @@
 
 "esc_customs": [
     {
-        "command": "C",
-        "name": "document_eject_length",
-        "description": "selects the document eject length"
-    },
-    {
-        "command": "c1",
-        "name": "line_spacing_paper_selection",
-        "description": "selects papers for setting line spacing"
-    },
-    {
-        "command": "f",
-        "name": "document_waiting_time",
-        "description": "sets the document paper waiting time"
-    },
-    {
         "command": "o",
         "name": "software_stamp",
         "description": "prints the software stamp stored in the printer"
+    }
+],
+
+"custom_settings": [
+    {
+        "command": "ESC C",
+        "name": "document_eject_length",
+        "description": "selects the document eject length",
+        "input_type": "255"
     },
     {
-        "command": "z",
+        "command": "ESC c1",
+        "name": "line_spacing_paper_selection",
+        "description": "selects papers for setting line spacing",
+        "input_type": "255"
+    },
+    {
+        "command": "ESC f",
+        "name": "document_waiting_time",
+        "description": "sets the document paper waiting time",
+        "input_type": "255"
+    },
+    {
+        "command": "ESC z",
         "name": "parallel_printing",
-        "description": "turns parallel printing for receipt and journal on or off"
+        "description": "turns parallel printing for receipt and journal on or off",
+        "input_type": "bool"
     }
 ],
 
@@ -73,16 +80,19 @@
     "setup_command": "ESC c0",
     "papers": [
         {
+            "id": "receipt",
             "name": "Receipt",
             "type": "paper",
             "command": "2"
         },
         {
+            "id": "journal",
             "name": "Journal",
             "type": "paper",
             "command": "1"
         },
         {
+            "id": "document",
             "name": "Document",
             "type": "other",
             "command": "4"

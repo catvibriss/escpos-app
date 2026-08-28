@@ -8,6 +8,7 @@ from functools import wraps
 from .exceptions import CommandNotAvaliable, BasicNotAvaliable
 from .const import ESC, GS
 from .profile import Profile
+from .utils import parse_command
 
 @dataclass
 class RequestData:
@@ -168,14 +169,14 @@ def resolve_esc_command(command_name, command_standart: bytes | None = None):
                 cmd = command_standart
 
             elif command_name in overwrites:
-                cmd = printer.profile.parse_command(overwrites[command_name])
+                cmd = parse_command(overwrites[command_name])
 
             else:
                 command = next((cmd for cmd in customs if cmd["name"] == command_name), None)
                 if command is None:
                     raise CommandNotAvaliable(f"ESC command \"{command_name}\" not avaliable for \"{profile["name"]}\"")
                 
-                cmd = printer.profile.parse_command(command["command"])
+                cmd = parse_command(command["command"])
                 
             return func(printer, *args, _cmd=cmd, **kwargs)
         return wrapper
