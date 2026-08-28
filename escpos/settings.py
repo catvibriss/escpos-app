@@ -1,0 +1,48 @@
+from typing import Any
+
+from .printer import SerialPrinter, resolve_esc_command
+from .exceptions import UnavaliableFeature, InvalidProfile
+from .utils import parse_command
+
+def send_custom_setting(printer: SerialPrinter, setting: str, value: Any):
+    settings = printer.profile.get_custom_settings()
+    profile_name = printer.profile.name
+
+    # custom settings?
+    if len(setting) == 0:
+        raise UnavaliableFeature("custom settings", profile_name)
+
+    # this exists?
+    selected = next((st for st in settings if st["name"] == setting), None)
+    if selected is None:
+        raise UnavaliableFeature(setting, profile_name)
+
+    # input correct?
+    if selected["input_type"] == "bool":
+        if value not in (0, 1, True, False):
+            raise ValueError("incorrect input. excepted: bool")
+
+        value = bytes([value])    
+        
+    else:
+        try:
+            int_limit = int(selected["input_type"])
+            if int_limit < 1:
+                raise InvalidProfile(f"unknown or invalid input_type \"{selected["input_type"]}\" for custom setting \"{setting}\"." 
+                                    "check your profile and try again")
+            
+            if not isinstance(value, int): 
+                raise ValueError(f"incorrect input. excepted: int, not {type(value)}")
+
+            if not value in range(0, int_limit+1):
+                raise ValueError(f"incorrect input. excepted: int between [0, {int_limit}], not {value}")
+
+            value = bytes([value])    
+
+        except Exception as e:
+            raise InvalidProfile(f"unknown or invalid input_type \"{selected["input_type"]}\" for custom setting \"{setting}\"." 
+                                 f"check your profile and try again\n\noccured exception: {repr(e)}")
+
+    # build and send command
+    cmd = parse_command(selected["command"]) + value
+    printer.send(cmd)

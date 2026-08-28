@@ -4,6 +4,14 @@ class CommandNotAvaliable(Exception):
 class BasicNotAvaliable(Exception):
     pass
 
+class UnavaliableFeature(Exception):
+    def __init__(self, feature: str, profile_id: str):
+        """
+        :param feature: feature
+        :param profile_id: profile path or profile name
+        """
+        super().__init__(f"feature {feature} unavaliable for profile \"{profile_id}\". check profile or change feature")
+
 class InvalidProfile(Exception):
     pass
 
