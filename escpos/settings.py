@@ -5,6 +5,14 @@ from .exceptions import UnavaliableFeature, InvalidProfile
 from .utils import parse_command
 from .const import GS
 
+@resolve_esc_command("init", b"@")
+def reset_printer(printer: SerialPrinter, _cmd: bytes):
+    printer.send_esc(_cmd)
+
+@resolve_esc_command("unidirectional_printing", b"U")
+def set_unidirectional_printing(printer: SerialPrinter, enabled: bool, _cmd: bytes):
+    printer.send_esc(_cmd + bytes([enabled]))
+
 def set_asb(printer: SerialPrinter, key: int | bytes):
     if not printer.profile.is_asb_avaliable():
         raise UnavaliableFeature("asb", printer.profile.name)

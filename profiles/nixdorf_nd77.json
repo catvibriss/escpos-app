@@ -10,7 +10,7 @@
 "esc_commands": [
     "init",
     "line_spacing", "line_spacing_default", "char_spacing", "underline", "bold", "double_strike", "align", "upside_down",
-    "print_mode", "undirectional_printing",
+    "print_mode", "unidirectional_printing",
     "absolute_position", "home_position", "relative_position",
     "user_charset", "define_chars", "clean_user_chars",
     "print_bit_image",
