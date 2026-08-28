@@ -7,8 +7,7 @@ import serial
 from functools import wraps
 from .exceptions import CommandNotAvaliable, BasicNotAvaliable
 from .const import ESC, GS
-
-import json
+from .profile import Profile
 
 @dataclass
 class RequestData:
@@ -17,15 +16,10 @@ class RequestData:
     req_event: threading.Event = field(default_factory=threading.Event)
     cancelled: bool = False
 
-def load_profile(profile_path: str):
-    with open(profile_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return data
-
 class SerialPrinter:
-    def __init__(self, port: str, profile: dict, serial_handler: callable = None):
+    def __init__(self, port: str, profile: Profile, serial_handler: callable = None):
         self.port = port
-        self.profile =  profile
+        self.profile = profile
 
         self._serial = None
 
@@ -168,19 +162,20 @@ def resolve_esc_command(command_name, command_standart: bytes | None = None):
 
             cmd = command_standart
             profile = printer.profile
+            commands, overwrites, customs = printer.profile.get_command_group("esc")
 
-            if command_name in profile["esc_commands"]:
+            if command_name in commands:
                 cmd = command_standart
 
-            elif command_name in profile["esc_overwrites"]:
-                cmd = profile["esc_overwrites"][command_name].encode("ascii")
+            elif command_name in overwrites:
+                cmd = printer.profile.parse_command(overwrites[command_name])
 
             else:
-                command = next((cmd for cmd in profile["esc_customs"] if cmd["name"] == command_name), None)
+                command = next((cmd for cmd in customs if cmd["name"] == command_name), None)
                 if command is None:
                     raise CommandNotAvaliable(f"ESC command \"{command_name}\" not avaliable for \"{profile["name"]}\"")
                 
-                cmd = command["command"].encode("ascii")
+                cmd = printer.profile.parse_command(command["command"])
                 
             return func(printer, *args, _cmd=cmd, **kwargs)
         return wrapper
@@ -195,7 +190,7 @@ def check_basics(basics):
             profile = printer.profile
 
             for basic in basics:
-                if basic not in profile["basics"]:
+                if basic not in profile.get_basics():
                     raise BasicNotAvaliable(f"basic \"{basic}\" not avaliable for \"{profile["name"]}\"")
                 
             return func(printer, override, *args, **kwargs)

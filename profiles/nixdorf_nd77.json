@@ -31,11 +31,6 @@
         "description": "selects the document eject length"
     },
     {
-        "command": "c0",
-        "name": "paper_selection",
-        "description": "selects print papers"
-    },
-    {
         "command": "c1",
         "name": "line_spacing_paper_selection",
         "description": "selects papers for setting line spacing"
@@ -72,6 +67,27 @@
         "double_width": true,
         "double_heught": true
     }
+},
+
+"papers": {
+    "setup_command": "ESC c0",
+    "papers": [
+        {
+            "name": "Receipt",
+            "type": "paper",
+            "command": "2"
+        },
+        {
+            "name": "Journal",
+            "type": "paper",
+            "command": "1"
+        },
+        {
+            "name": "Document",
+            "type": "other",
+            "command": "4"
+        }        
+    ]
 },
 
 "asb": {
