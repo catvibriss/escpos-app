@@ -18,9 +18,9 @@ class RequestData:
     cancelled: bool = False
 
 class SerialPrinter:
-    def __init__(self, port: str, profile: Profile, serial_handler: callable = None):
-        self.port = port
-        self.profile = profile
+    def __init__(self, serial_handler: callable = None):
+        self.port = None
+        self.profile = None
 
         self._serial = None
 
@@ -36,7 +36,10 @@ class SerialPrinter:
         self._current_request: RequestData = None   # if not enought bytes in buffer 
 
     # user basics
-    def connect(self):
+    def connect(self, port: str, profile: Profile):
+        self.port = port
+        self.profile = profile
+
         self._serial = serial.Serial(
             port = self.port,
             baudrate = 9600, 
@@ -61,8 +64,8 @@ class SerialPrinter:
     def send_esc(self, cmd: bytes):
         self.send(ESC + cmd)
 
-    def request(self, data, timeout: float = 3):
-        req = RequestData(size=2)
+    def request(self, data, size: int = 1, timeout: float = 3):
+        req = RequestData(size)
 
         self.send(data)
 
