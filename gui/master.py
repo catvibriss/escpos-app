@@ -1,7 +1,8 @@
 import customtkinter as ctk
 import tkinter as tk
 
-from gui import sidebar, printer
+from gui import sidebar, settings
+from .manager import AppManager
 
 from escpos.printer import SerialPrinter
 
@@ -10,8 +11,9 @@ class App(ctk.CTk):
         super().__init__()
 
         # setup
-        self.printer = SerialPrinter()
-        
+        self.main_printer = SerialPrinter()
+        self.manager = AppManager(self.main_printer)
+
         self.title("esc/pos printer app")
         self.minsize(1200, 700)
         self.geometry("1200x700")
@@ -26,7 +28,7 @@ class App(ctk.CTk):
         sidebar_frame.pack(side="left", fill="y")
         sidebar_frame.pack_propagate(False)
 
-        self.master_sidebar = sidebar.Sidebar(sidebar_frame, self.printer)
+        self.master_sidebar = sidebar.Sidebar(sidebar_frame, self.manager)
         self.master_sidebar.pack(padx=0, pady=0, fill="both", expand=True)
 
         # content
@@ -35,7 +37,7 @@ class App(ctk.CTk):
         self.content_frame.pack(side="left", fill="both", expand=True)
 
         # TODO: pagination
-        printer_page = printer.Content(master=self.content_frame, name="printer", printer=self.printer)
-        printer_page.pack(side="top", fill="both")
+        test_page = settings.Content(master=self.content_frame, manager=self.manager)
+        test_page.pack(side="top", fill="both")
 
 ctk.set_appearance_mode("dark")
