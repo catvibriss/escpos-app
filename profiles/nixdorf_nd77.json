@@ -40,7 +40,7 @@
         "input_type": "255"
     },
     {
-        "command": "ESC c1",
+        "command": "ESC c 1",
         "name": "line_spacing_paper_selection",
         "description": "selects papers for setting line spacing",
         "input_type": "255"
@@ -77,7 +77,7 @@
 },
 
 "papers": {
-    "setup_command": "ESC c0",
+    "setup_command": "ESC c 0",
     "papers": [
         {
             "id": "receipt",

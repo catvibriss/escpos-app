@@ -11,17 +11,25 @@ def parse_command(command: str) -> bytes:
     if not command.isascii():
         raise ValueError(f"command \"{command}\" is not ASCII. commands must contain only ASCII chars")
 
-    command = command.lower()
-    cmd_splitted = command.split()
+    command = command.split()
 
-    if not cmd_splitted:
+    if not command:
         raise ValueError("command is empty. check commands in your profile")
     
-    basics = {"esc": ESC, "gs": GS, "dle": DLE}
+    basics = {"esc": ESC, "gs": GS, "dle": DLE, "eot": EOT, "enq": ENQ, 
+              "sp": SP, "lf": LF, "ff": FF, "cr": CR}
 
-    res = basics[cmd_splitted[0]] if cmd_splitted[0] in basics else cmd_splitted[0].encode("ascii")
-    for other in cmd_splitted[1:]:
-        res += other.encode("ascii")
+    res = bytearray(0)
+
+    for part in command:
+        if part.isdigit():
+            res += bytes([int(part)])
+
+        elif part.lower() in basics:
+            res += basics[part.lower()]
+
+        else:
+            res += part.encode("ascii")
 
     return res
 
