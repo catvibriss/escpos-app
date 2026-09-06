@@ -7,6 +7,7 @@ class ProfileMissed(Exception):
 class AppManager:
     def __init__(self, printer: SerialPrinter | None = None):
         self.printer = printer
+        self._printer_conn = False
 
         self.printer_profile = None
 
@@ -20,7 +21,6 @@ class AppManager:
             obj.refresh()
 
     def printer_connect(self, port: str, profile: Profile | None = None):
-
         if profile is None:
             if self.printer_profile is None:
                 raise ProfileMissed("select profile and try to connect again")
@@ -28,15 +28,16 @@ class AppManager:
                 profile = self.printer_profile
 
         self.printer.connect(port, profile)
+        self._printer_conn = True
         self.refresh()
 
     def printer_disconnect(self):
-        self.printer = None
+        self._printer_conn = False
         self.refresh()
 
     @property
     def printer_connected(self):
-        return self.printer is not None
+        return self._printer_conn
 
     def set_printer_profile(self, profile: Profile):
         self.printer_profile = profile

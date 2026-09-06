@@ -5,13 +5,12 @@ from .manager import AppManager
 
 class Page(ctk.CTkFrame):
     def __init__(self, master, name: str, manager: AppManager, *args, **kwargs):
-        super().__init__(master, bg_color="transparent", *args, **kwargs)
+        super().__init__(master, fg_color="#181818", *args, **kwargs)
 
         self.manager = manager
         self.name = name
 
-    def get_printer(self):
-        return self.manager.printer
+        self.printer = self.manager.printer
     
 class TwoLayerDropdown(ctk.CTkFrame):
     item_height = 40
@@ -180,3 +179,15 @@ class TwoLayerDropdown(ctk.CTkFrame):
 
         if self.command:
             self.command(item)
+
+class SwithcerRow(ctk.CTkFrame):
+    def __init__(self, master, label, callback=None, *args, fg_color="transparent", **kwargs):
+        super().__init__(master, fg_color=fg_color, *args, **kwargs)
+
+        self.label = ctk.CTkLabel(self, text=label)
+        self.label.grid(row=0, column=0, sticky="w")
+
+        self.swithcer = ctk.CTkSwitch(self, text="", command=callback)
+        self.swithcer.grid(row=0, column=1, padx=(10, 0))
+
+        self.grid_columnconfigure(0, weight=1)
