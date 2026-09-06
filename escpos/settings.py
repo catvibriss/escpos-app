@@ -38,7 +38,7 @@ def send_custom_setting(printer: SerialPrinter, setting: str, value: Any):
     # input correct?
     if selected["input_type"] == "bool":
         if value not in (0, 1, True, False):
-            raise ValueError("incorrect input. excepted: bool")
+            raise ValueError("incorrect input. expected: bool")
 
         value = bytes([value])    
         
@@ -50,10 +50,10 @@ def send_custom_setting(printer: SerialPrinter, setting: str, value: Any):
                                     "check your profile and try again")
             
             if not isinstance(value, int): 
-                raise ValueError(f"incorrect input. excepted: int, not {type(value)}")
+                raise ValueError(f"incorrect input. expected: int, not {type(value)}")
 
             if not value in range(0, int_limit+1):
-                raise ValueError(f"incorrect input. excepted: int between [0, {int_limit}], not {value}")
+                raise ValueError(f"incorrect input. expected: int in [0, {int_limit}], not {value}")
 
             value = bytes([value])    
 

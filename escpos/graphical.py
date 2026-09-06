@@ -12,7 +12,7 @@ def proceed_image(path: str, mode: int):
         color in ((0, 0, 0), (255, 255, 255))
         for _, color in colors
     ):
-        raise ValueError("expected TRUE monochrome image! only real white (255, 255, 255) and real black (0, 0, 0) colors")
+        raise ValueError("expected TRUE monochrome image: only real white (255, 255, 255) and real black (0, 0, 0) colors")
 
     # "bit"map
     if mode in (0, 1):
