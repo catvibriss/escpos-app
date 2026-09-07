@@ -116,7 +116,30 @@ class TwoLayerDropdown(ctk.CTkFrame):
 
         self._popup.lift()
         self._popup.update_idletasks()
+
+        self._popup.bind("<Button-1>", self._check_outside_click, add="+")
         self._popup.grab_set()
+
+    def _check_outside_click(self, event):
+        if self._popup is None:
+            return
+
+        widget = self.winfo_containing(event.x_root, event.y_root)
+
+        if widget is None or not self._is_descendant(widget, self._popup):
+            self._close_dropdown()
+
+    def _is_descendant(self, widget, parent):
+        while widget is not None:
+            if widget == parent:
+                return True
+
+            try:
+                widget = widget.master
+            except AttributeError:
+                break
+
+        return False
 
     def _close_dropdown(self):
         popup = self._popup

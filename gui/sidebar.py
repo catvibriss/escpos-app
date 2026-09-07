@@ -1,8 +1,8 @@
 import customtkinter as ctk
 import tkinter as tk
 
-from .manager import AppManager
-from .objects import TwoLayerDropdown
+from gui.manager import AppManager
+from gui.objects import TwoLayerDropdown
 
 from escpos.printer import SerialPrinter
 from escpos.profile import Profile
