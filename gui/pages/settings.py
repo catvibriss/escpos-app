@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
 
-from .objects import Page, SwithcerRow
+from gui.objects import Page, SwithcerRow
 
 from escpos import settings as esc_settings
 from escpos.profile import Profile, CustomSetting
