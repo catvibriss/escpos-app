@@ -2,6 +2,15 @@ from .exceptions import InvalidProfile, MissedProfileField
 from .const import ESC, GS, DLE
 import json
 
+from dataclasses import dataclass
+
+@dataclass
+class CustomSetting:
+    command: str
+    input_type: str
+    name: str
+    description: str | None = None
+
 def load_json(profile_path: str) -> dict:
     with open(profile_path, "r", encoding="utf-8") as file:
         data = json.load(file)
@@ -60,7 +69,12 @@ class Profile:
 
     # settings
     def get_custom_settings(self):
-        return self.profile_json.get("custom_settings", [])
+        cmds = self.profile_json.get("custom_settings", [])
+        res = []
+        for cmd in cmds:
+            res.append(CustomSetting(**cmd))
+
+        return res
 
     # asb
     def is_asb_avaliable(self):

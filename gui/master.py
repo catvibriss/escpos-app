@@ -38,6 +38,6 @@ class App(ctk.CTk):
 
         # TODO: pagination
         test_page = settings.Content(master=self.content_frame, manager=self.manager)
-        test_page.pack(side="top", fill="both")
+        test_page.pack(side="top", fill="both", padx=16)
 
 ctk.set_appearance_mode("dark")
